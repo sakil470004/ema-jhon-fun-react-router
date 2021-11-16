@@ -6,11 +6,21 @@ import NotFound from './components/NotFound/NotFound';
 import OrderReview from './components/OrderReview/OrderReview';
 import PlaceOrder from './components/PlaceOrder/PlaceOrder';
 import Shop from './components/Shop/Shop';
+import Login from './components/Login/Login';
+import Shipment from './components/Shipment/Shipment';
+import { createContext, useState } from 'react';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+
+export const UserContext=createContext();
+
 
 function App() {
+  const [loggedInUser, setLoggedInUser] = useState({})
   return (
-    <div>
+    <UserContext.Provider value={[loggedInUser,setLoggedInUser]}>
       <Router>
+      <h3>{loggedInUser.email}</h3>
+      {/* link always need in router */}
         <Header></Header>
         <Switch>
           <Route exact path="/">
@@ -22,19 +32,25 @@ function App() {
           <Route path="/review">
             <OrderReview></OrderReview>
           </Route>
-          <Route path="/inventory">
+          <PrivateRoute path="/inventory">
             <Inventory></Inventory>
-          </Route>
+          </PrivateRoute>
           <Route path="/placeorder">
             <PlaceOrder></PlaceOrder>
           </Route>
+          <Route path="/login">
+            <Login></Login>
+          </Route>
+          <PrivateRoute path="/shipment">
+            <Shipment></Shipment>
+          </PrivateRoute>
           <Route path="*">
             <NotFound></NotFound>
           </Route>
         </Switch>
       </Router>
 
-    </div>
+    </UserContext.Provider>
   );
 }
 
